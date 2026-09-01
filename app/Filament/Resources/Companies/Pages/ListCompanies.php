@@ -1,0 +1,23 @@
+<?php
+
+namespace App\Filament\Resources\Companies\Pages;
+
+use App\Filament\Resources\Companies\CompanyResource;
+use Filament\Actions\CreateAction;
+use Filament\Resources\Pages\ListRecords;
+
+class ListCompanies extends ListRecords
+{
+    protected static string $resource = CompanyResource::class;
+
+    protected function getHeaderActions(): array
+    {
+        return [
+            \Filament\Actions\ImportAction::make()
+                ->importer(\App\Filament\Imports\CompanyImporter::class),
+            \Filament\Actions\ExportAction::make()
+                ->exporter(\App\Filament\Exports\CompanyExporter::class),
+            CreateAction::make(),
+        ];
+    }
+}
