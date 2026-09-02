@@ -1,0 +1,18 @@
+/* Animated Gradient Background for Filament */
+.fi-layout, .fi-main {
+    background: linear-gradient(-45deg, #e0e7ff, #f3e8ff, #dbeafe, #e0e7ff) !important;
+    background-size: 400% 400% !important;
+    animation: moveGradient 15s ease infinite !important;
+}
+
+.dark .fi-layout, .dark .fi-main {
+    background: linear-gradient(-45deg, #0f172a, #1e1b4b, #172554, #0f172a) !important;
+    background-size: 400% 400% !important;
+    animation: moveGradient 15s ease infinite !important;
+}
+
+@keyframes moveGradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
