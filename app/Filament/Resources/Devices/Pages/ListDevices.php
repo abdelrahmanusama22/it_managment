@@ -13,7 +13,7 @@ class ListDevices extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            \Filament\Actions\ImportAction::make()
+            \App\Filament\Actions\CustomImportAction::make()
                 ->importer(\App\Filament\Imports\DeviceImporter::class),
             \Filament\Actions\ExportAction::make()
                 ->exporter(\App\Filament\Exports\DeviceExporter::class),
