@@ -16,7 +16,6 @@ class ListDevices extends ListRecords
 
     protected function getHeaderActions(): array
     {
-        dd('File is being read from server!');
         return [
             CustomImportAction::make()
                 ->importer(DeviceImporter::class),
