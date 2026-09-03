@@ -190,4 +190,18 @@ class DeviceImporter extends Importer
 
         return $body;
     }
+    public static function getForm(): array
+    {
+        return [
+            \Filament\Forms\Components\FileUpload::make('file')
+                ->label('Upload Excel or CSV file')
+                ->acceptedFileTypes([
+                    'text/csv',
+                    'application/csv',
+                    'application/vnd.ms-excel',
+                    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                ])
+                ->required(),
+        ];
+    }
 }
