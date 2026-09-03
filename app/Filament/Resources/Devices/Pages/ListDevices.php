@@ -3,11 +3,7 @@
 namespace App\Filament\Resources\Devices\Pages;
 
 use App\Filament\Resources\Devices\DeviceResource;
-use App\Filament\Actions\CustomImportAction;
-use App\Filament\Imports\DeviceImporter;
 use Filament\Actions\CreateAction;
-use Filament\Actions\ExportAction;
-use App\Filament\Exports\DeviceExporter;
 use Filament\Resources\Pages\ListRecords;
 
 class ListDevices extends ListRecords
@@ -16,12 +12,11 @@ class ListDevices extends ListRecords
 
     protected function getHeaderActions(): array
     {
-        dd('File is being read from server!');
         return [
-            CustomImportAction::make()
-                ->importer(DeviceImporter::class),
-            ExportAction::make()
-                ->exporter(DeviceExporter::class),
+            \App\Filament\Actions\CustomImportAction::make()
+                ->importer(\App\Filament\Imports\DeviceImporter::class),
+            \Filament\Actions\ExportAction::make()
+                ->exporter(\App\Filament\Exports\DeviceExporter::class),
             CreateAction::make(),
         ];
     }

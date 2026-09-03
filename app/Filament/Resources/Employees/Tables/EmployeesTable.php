@@ -22,7 +22,13 @@ class EmployeesTable
                     ->searchable()
                     ->sortable()
                     ->toggleable(),
+                \Filament\Tables\Columns\TextColumn::make('branch.company.name')
+                    ->label('Company')
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(),
                 \Filament\Tables\Columns\TextColumn::make('branch.name')
+                    ->label('Branch')
                     ->searchable()
                     ->sortable()
                     ->toggleable(),
@@ -36,7 +42,7 @@ class EmployeesTable
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                \Filament\Tables\Filters\SelectFilter::make('branch_id')->relationship('branch', 'name'),
+
             ])
             ->headerActions([
                 // Removed duplicate ExportAction

@@ -17,6 +17,8 @@ class EmployeeExporter extends Exporter
         return [
             ExportColumn::make('id')
                 ->label('ID'),
+            ExportColumn::make('branch.company.name')
+                ->label('Company Name'),
             ExportColumn::make('branch.name')
                 ->label('Branch Name'),
             ExportColumn::make('name'),

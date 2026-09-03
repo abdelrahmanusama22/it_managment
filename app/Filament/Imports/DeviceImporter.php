@@ -15,6 +15,7 @@ class DeviceImporter extends Importer
     public static function getColumns(): array
     {
         return [
+            ImportColumn::make('sku'),
             ImportColumn::make('company')
                 ->relationship(resolveUsing: 'name'),
             ImportColumn::make('branch')
@@ -98,15 +99,11 @@ class DeviceImporter extends Importer
         $loggedOnUser = $this->data['logged_on_user'] ?? null;
 
         if (!empty($employeeName) || !empty($loggedOnUser)) {
-            $company = \App\Models\Company::firstOrCreate(['name' => $companyName]);
-            $branch = \App\Models\Branch::firstOrCreate(['name' => 'Default Branch'], ['company_id' => $company->id]);
-
             if (!empty($employeeName)) {
                 $employee = \App\Models\Employee::firstOrCreate(
                     ['name' => $employeeName],
                     [
                         'logged_on_user' => $loggedOnUser,
-                        'branch_id' => $branch->id,
                     ]
                 );
 
@@ -119,7 +116,6 @@ class DeviceImporter extends Importer
                     ['logged_on_user' => $loggedOnUser],
                     [
                         'name' => 'Unknown',
-                        'branch_id' => $branch->id,
                     ]
                 );
             }
@@ -149,22 +145,12 @@ class DeviceImporter extends Importer
 
     public function resolveRecord(): ?Device
     {
-        $macAddress = $this->data['mac_address'] ?? null;
-        $ipAddress = $this->data['ip_address'] ?? null;
-        $deviceName = $this->data['device_name'] ?? null;
-
-        if ($macAddress) {
-            return Device::firstOrNew(['mac_address' => $macAddress]);
+        if (isset($this->data['sku']) && filled($this->data['sku'])) {
+            return Device::firstOrNew([
+                'sku' => $this->data['sku'],
+            ]);
         }
-
-        if ($ipAddress) {
-            return Device::firstOrNew(['ip_address' => $ipAddress]);
-        }
-
-        if ($deviceName) {
-            return Device::firstOrNew(['device_name' => $deviceName]);
-        }
-
+        
         return new Device();
     }
 
@@ -178,6 +164,20 @@ class DeviceImporter extends Importer
                 $this->record->company_id = $branch->company_id;
             }
         }
+
+        // Force exact Employee matching/creation based on the Excel sheet
+        if (!empty($this->data['employee'])) {
+            $employee = \App\Models\Employee::firstOrCreate([
+                'name' => trim($this->data['employee'])
+            ]);
+            
+            // Link the employee to the device's branch
+            if ($this->record->branch_id) {
+                $employee->update(['branch_id' => $this->record->branch_id]);
+            }
+
+            $this->record->employee_id = $employee->id;
+        }
     }
 
     public static function getCompletedNotificationBody(Import $import): string
@@ -189,19 +189,5 @@ class DeviceImporter extends Importer
         }
 
         return $body;
-    }
-    public static function getForm(): array
-    {
-        return [
-            \Filament\Forms\Components\FileUpload::make('file')
-                ->label('Upload Excel or CSV file')
-                ->acceptedFileTypes([
-                    'text/csv',
-                    'application/csv',
-                    'application/vnd.ms-excel',
-                    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-                ])
-                ->required(),
-        ];
     }
 }

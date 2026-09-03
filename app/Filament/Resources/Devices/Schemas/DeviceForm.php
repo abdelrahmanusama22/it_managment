@@ -50,6 +50,12 @@ class DeviceForm
                             ]),
                         \Filament\Schemas\Components\Tabs\Tab::make('Hardware Info')
                             ->schema([
+                                \Filament\Forms\Components\TextInput::make('sku')
+                                    ->label('SKU / Asset Tag')
+                                    ->unique(ignoreRecord: true)
+                                    ->disabledOn('create')
+                                    ->placeholder('Auto-generated on save')
+                                    ->maxLength(255),
                                 \Filament\Forms\Components\Select::make('manufacturer_id')
                                     ->relationship('manufacturer', 'name')
                                     ->searchable()->preload()

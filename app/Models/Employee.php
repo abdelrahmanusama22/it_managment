@@ -8,10 +8,10 @@ class Employee extends Model
 {
     protected $guarded = [];
 
-    public function branch() {
-        return $this->belongsTo(Branch::class);
-    }
     public function devices() {
         return $this->hasMany(Device::class);
+    }
+    public function branch() {
+        return $this->belongsTo(Branch::class);
     }
 }

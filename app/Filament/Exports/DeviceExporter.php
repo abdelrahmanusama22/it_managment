@@ -17,6 +17,8 @@ class DeviceExporter extends Exporter
         return [
             ExportColumn::make('id')
                 ->label('ID'),
+            ExportColumn::make('sku')
+                ->label('SKU'),
             ExportColumn::make('company.name')
                 ->label('Company Name'),
             ExportColumn::make('branch.name')

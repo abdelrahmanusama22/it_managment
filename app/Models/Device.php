@@ -3,16 +3,19 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class Device extends Model
 {
-    protected $fillable = [
-        'company_id', 'branch_id', 'device_type_id', 'employee_id',
-        'manufacturer_id', 'operating_system_id', 'ms_office_id', 'ip_address', 'mac_address',
-        'model', 'device_name', 'cpu', 'ram', 'ram_speed', 'hard_disk',
-        'monitor', 'os_installation_date', 'location_within_branch',
-        'username', 'password'
-    ];
+    protected static function booted(): void
+    {
+        static::creating(function ($device) {
+            if (empty($device->sku)) {
+                $device->sku = 'DEV-' . strtoupper(Str::random(8));
+            }
+        });
+    }
+    protected $guarded = [];
 
     protected $casts = [
         'password' => 'encrypted',

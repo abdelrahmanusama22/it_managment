@@ -13,6 +13,10 @@ class DevicesTable
     {
         return $table
             ->columns([
+                \Filament\Tables\Columns\TextColumn::make('sku')
+                    ->label('SKU')
+                    ->searchable()
+                    ->sortable(),
                 \Filament\Tables\Columns\TextColumn::make('device_name')
                     ->searchable()
                     ->sortable()
