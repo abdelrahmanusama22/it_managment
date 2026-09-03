@@ -18,8 +18,8 @@ class SmartAlertsOverview extends BaseWidget
                 ->description('Devices without an employee')
                 ->descriptionIcon('heroicon-o-exclamation-triangle')
                 ->color('warning'),
-            Stat::make('Missing Software', Device::whereNull('software_id')->count())
-                ->description('Devices without OS & Office assigned')
+            Stat::make('Missing Software', Device::whereNull('operating_system_id')->orWhereNull('ms_office_id')->count())
+                ->description('Devices missing OS or MS Office')
                 ->descriptionIcon('heroicon-o-x-circle')
                 ->color('danger'),
         ];

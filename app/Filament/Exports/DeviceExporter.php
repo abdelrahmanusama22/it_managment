@@ -17,6 +17,8 @@ class DeviceExporter extends Exporter
         return [
             ExportColumn::make('id')
                 ->label('ID'),
+            ExportColumn::make('company.name')
+                ->label('Company Name'),
             ExportColumn::make('branch.name')
                 ->label('Branch Name'),
             ExportColumn::make('deviceType.name')
@@ -36,10 +38,10 @@ class DeviceExporter extends Exporter
             ExportColumn::make('ram_speed'),
             ExportColumn::make('hard_disk'),
             ExportColumn::make('monitor'),
-            ExportColumn::make('software.os_name')
+            ExportColumn::make('operatingSystem.name')
                 ->label('OS Name'),
             ExportColumn::make('os_installation_date'),
-            ExportColumn::make('software.ms_office_name')
+            ExportColumn::make('msOffice.name')
                 ->label('MS Office Name'),
             ExportColumn::make('location_within_branch'),
             ExportColumn::make('username'),

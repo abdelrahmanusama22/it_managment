@@ -41,12 +41,12 @@ class DevicesTable
                     ->searchable()
                     ->sortable()
                     ->toggleable(),
-                \Filament\Tables\Columns\TextColumn::make('software.os_name')
+                \Filament\Tables\Columns\TextColumn::make('operatingSystem.name')
                     ->label('OS Name')
                     ->searchable()
                     ->sortable()
                     ->toggleable(),
-                \Filament\Tables\Columns\TextColumn::make('software.ms_office_name')
+                \Filament\Tables\Columns\TextColumn::make('msOffice.name')
                     ->label('MS Office Name')
                     ->searchable()
                     ->sortable()
@@ -130,12 +130,11 @@ class DevicesTable
                 \Filament\Tables\Filters\SelectFilter::make('manufacturer_id')
                     ->relationship('manufacturer', 'name')
                     ->label('Manufacturer'),
-                \Filament\Tables\Filters\SelectFilter::make('software_id')
-                    ->relationship('software', 'os_name')
+                \Filament\Tables\Filters\SelectFilter::make('operating_system_id')
+                    ->relationship('operatingSystem', 'name')
                     ->label('OS Name'),
-                \Filament\Tables\Filters\SelectFilter::make('ms_office_name')
-                    ->options(fn () => \App\Models\Software::select('ms_office_name')->whereNotNull('ms_office_name')->distinct()->pluck('ms_office_name', 'ms_office_name')->toArray())
-                    ->query(fn ($query, array $data) => $query->when($data['value'], fn ($q, $v) => $q->whereHas('software', fn ($sq) => $sq->where('ms_office_name', $v))))
+                \Filament\Tables\Filters\SelectFilter::make('ms_office_id')
+                    ->relationship('msOffice', 'name')
                     ->label('MS Office'),
 
                 \Filament\Tables\Filters\Filter::make('device_name')

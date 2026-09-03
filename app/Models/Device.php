@@ -8,7 +8,7 @@ class Device extends Model
 {
     protected $fillable = [
         'company_id', 'branch_id', 'device_type_id', 'employee_id',
-        'manufacturer_id', 'software_id', 'ip_address', 'mac_address',
+        'manufacturer_id', 'operating_system_id', 'ms_office_id', 'ip_address', 'mac_address',
         'model', 'device_name', 'cpu', 'ram', 'ram_speed', 'hard_disk',
         'monitor', 'os_installation_date', 'location_within_branch',
         'username', 'password'
@@ -35,7 +35,10 @@ class Device extends Model
     public function manufacturer() {
         return $this->belongsTo(Manufacturer::class);
     }
-    public function software() {
-        return $this->belongsTo(Software::class);
+    public function operatingSystem() {
+        return $this->belongsTo(OperatingSystem::class);
+    }
+    public function msOffice() {
+        return $this->belongsTo(MsOffice::class);
     }
 }

@@ -15,6 +15,8 @@ class DeviceImporter extends Importer
     public static function getColumns(): array
     {
         return [
+            ImportColumn::make('company')
+                ->relationship(resolveUsing: 'name'),
             ImportColumn::make('branch')
                 ->relationship(resolveUsing: 'name'),
             ImportColumn::make('deviceType')
@@ -43,8 +45,10 @@ class DeviceImporter extends Importer
                 ->rules(['nullable', 'max:255']),
             ImportColumn::make('monitor')
                 ->rules(['nullable', 'max:255']),
-            ImportColumn::make('os_name')
-                ->relationship(name: 'software', resolveUsing: 'os_name'),
+            ImportColumn::make('operating_system')
+                ->relationship(name: 'operatingSystem', resolveUsing: 'name'),
+            ImportColumn::make('ms_office')
+                ->relationship(name: 'msOffice', resolveUsing: 'name'),
             ImportColumn::make('os_installation_date')
                 ->rules(['nullable', 'date']),
             ImportColumn::make('location_within_branch')
@@ -75,8 +79,14 @@ class DeviceImporter extends Importer
         }
 
         // Auto-create relations if missing so Filament's relationship resolution doesn't fail
+        if (!empty($this->data['company'])) {
+            \App\Models\Company::firstOrCreate(['name' => $this->data['company']]);
+        }
+
+        $companyName = !empty($this->data['company']) ? $this->data['company'] : 'Default Company';
+
         if (!empty($this->data['branch'])) {
-            $company = \App\Models\Company::firstOrCreate(['name' => 'Default Company']);
+            $company = \App\Models\Company::firstOrCreate(['name' => $companyName]);
             \App\Models\Branch::firstOrCreate(['name' => $this->data['branch']], ['company_id' => $company->id]);
         }
 
@@ -88,7 +98,7 @@ class DeviceImporter extends Importer
         $loggedOnUser = $this->data['logged_on_user'] ?? null;
 
         if (!empty($employeeName) || !empty($loggedOnUser)) {
-            $company = \App\Models\Company::firstOrCreate(['name' => 'Default Company']);
+            $company = \App\Models\Company::firstOrCreate(['name' => $companyName]);
             $branch = \App\Models\Branch::firstOrCreate(['name' => 'Default Branch'], ['company_id' => $company->id]);
 
             if (!empty($employeeName)) {
@@ -119,8 +129,12 @@ class DeviceImporter extends Importer
             \App\Models\Manufacturer::firstOrCreate(['name' => $this->data['manufacturer']]);
         }
 
-        if (!empty($this->data['os_name'])) {
-            \App\Models\Software::firstOrCreate(['os_name' => $this->data['os_name']]);
+        if (!empty($this->data['operating_system'])) {
+            \App\Models\OperatingSystem::firstOrCreate(['name' => $this->data['operating_system']]);
+        }
+
+        if (!empty($this->data['ms_office'])) {
+            \App\Models\MsOffice::firstOrCreate(['name' => $this->data['ms_office']]);
         }
 
         // Attempt to parse date formats safely, defaulting to null if unparseable
@@ -152,6 +166,18 @@ class DeviceImporter extends Importer
         }
 
         return new Device();
+    }
+
+    protected function beforeSave(): void
+    {
+        // If a branch is assigned but the company is missing, auto-assign the company from the branch's relationship
+        if ($this->record->branch_id && empty($this->record->company_id)) {
+            $branch = \App\Models\Branch::find($this->record->branch_id);
+            
+            if ($branch && $branch->company_id) {
+                $this->record->company_id = $branch->company_id;
+            }
+        }
     }
 
     public static function getCompletedNotificationBody(Import $import): string
